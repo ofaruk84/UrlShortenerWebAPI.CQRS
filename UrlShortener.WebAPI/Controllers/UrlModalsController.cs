@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
-using UrlShortener.Application.Abstract;
 using UrlShortener.Application.Commands;
+using UrlShortener.Application.Queries;
 using UrlShortener.Domain.Dtos;
 
 namespace UrlShortener.WebAPI.Controllers
@@ -15,18 +15,19 @@ namespace UrlShortener.WebAPI.Controllers
     [ApiController]
     public class UrlModalsController : ControllerBase
     {
-        private readonly IUrlModalService _urlModalService;
+        
+        private readonly IMediator _mediator;
 
-        public UrlModalsController(IUrlModalService urlModalService)
+        public UrlModalsController( IMediator mediator)
         {
-            _urlModalService = urlModalService;
             
+            _mediator = mediator;
         }
 
         [HttpPost("add")]
         public async Task<IActionResult> Add(UrlRequestModal urlRequestModal)
         {
-            var result = await _urlModalService.AddAsync(urlRequestModal);
+            var result = await _mediator.Send(new AddUrlModalCommand(urlRequestModal));
 
 
             if (!result.Success) return BadRequest(result);
@@ -37,7 +38,7 @@ namespace UrlShortener.WebAPI.Controllers
         [HttpPost("addcustom")]
         public async Task<IActionResult> AddCustom(UrlRequestModal urlRequestModal)
         {
-            var result = await _urlModalService.AddCustomAsync(urlRequestModal);
+            var result = await _mediator.Send(new AddCustomUrlModalCommand(urlRequestModal));
 
             if (!result.Success) return BadRequest(result);
 
@@ -45,9 +46,9 @@ namespace UrlShortener.WebAPI.Controllers
         }
 
         [HttpGet("redirect")]
-        public async Task<IActionResult> CreateAndRedirect(string shortUrl, [FromQuery] string redirect = "true")
+        public async Task<IActionResult> RedirectToActualUrl(string shortUrl, [FromQuery] string redirect = "true")
         {
-            var shortUrlResult = await _urlModalService.GetByShortUrlAsync(shortUrl);
+            var shortUrlResult = await _mediator.Send(new GetByShortUrlQuery(shortUrl));
 
             if (!shortUrlResult.Success) return BadRequest(shortUrlResult);
 
@@ -59,7 +60,7 @@ namespace UrlShortener.WebAPI.Controllers
         [HttpGet("getall")]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _urlModalService.GetAllAsync();
+            var result = await _mediator.Send(new GetAllQuery());
 
             if (!result.Success) return BadRequest(result);
 
