@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Concrete\CommandHandlers\**" />
+    <Compile Remove="Concrete\Commands\**" />
+    <Compile Remove="Concrete\ValidationRules\**" />
+    <EmbeddedResource Remove="Concrete\CommandHandlers\**" />
+    <EmbeddedResource Remove="Concrete\Commands\**" />
+    <EmbeddedResource Remove="Concrete\ValidationRules\**" />
+    <None Remove="Concrete\CommandHandlers\**" />
+    <None Remove="Concrete\Commands\**" />
+    <None Remove="Concrete\ValidationRules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="10.4.0" />
+    <PackageReference Include="MediatR" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UrlShortener.Domain\UrlShortener.Domain.csproj" />
+    <ProjectReference Include="..\UrlShortener.Infra.Bus\UrlShortener.Infra.Bus.csproj" />
+    <ProjectReference Include="..\UrlShortener.Infra.Data\UrlShortener.Infra.Data.csproj" />
+  </ItemGroup>
+
+</Project>
